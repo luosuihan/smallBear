@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">玩Android</string>
+    <string name="action_settings">Settings</string>
+    <string name="text_tab_01">首页</string>
+    <string name="text_tab_02">项目</string>
+    <string name="text_tab_03">收藏</string>
+    <string name="text_tab_04">我的</string>
+</resources>
