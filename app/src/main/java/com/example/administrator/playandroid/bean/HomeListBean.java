@@ -28,7 +28,7 @@ public class HomeListBean {
         this.errorMsg = errorMsg;
     }
 
-    class HData{
+    public class HData{
         private int curPage;
         public List<HDatas> datas;
         private int offset;
@@ -85,14 +85,14 @@ public class HomeListBean {
             this.total = total;
         }
     }
-    class HDatas{
+    public class HDatas{
         private String apkLink;
         private String author;
         private int chapterId;
         private String chapterName;
         private boolean collect;
         private int courseId;
-        private boolean fresh;
+        private boolean fresh; //判断数据是否是新的
         private int id;
         private String link;
         private String niceDate;

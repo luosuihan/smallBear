@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.administrator.playandroid.R;
 import com.example.administrator.playandroid.base.BaseFragment;
+import com.example.administrator.playandroid.myview.HomeView;
 import com.example.administrator.playandroid.presenter.HomePresenter;
 
 /**
@@ -17,7 +18,7 @@ import com.example.administrator.playandroid.presenter.HomePresenter;
  * 首页列表展示 --- 通过fresh来判断是该数据是否为新的，如果是新的将置顶
  */
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements HomeView {
     private static HomeFragment singleFragment;
     public static HomeFragment getSingleHomeFragment(){
         if(singleFragment == null){
@@ -35,8 +36,18 @@ public class HomeFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflate = View.inflate(getContext(), R.layout.home_fragment, null);
-        HomePresenter homePresenter = new HomePresenter(getContext());
+        HomePresenter homePresenter = new HomePresenter(getContext(),this);
         homePresenter.homeSucceed();
         return inflate;
+    }
+
+    @Override
+    public void showLoad() {
+
+    }
+
+    @Override
+    public void hideLoad() {
+
     }
 }
