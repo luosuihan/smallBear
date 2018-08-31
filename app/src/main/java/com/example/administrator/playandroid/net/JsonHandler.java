@@ -10,13 +10,4 @@ public abstract class JsonHandler implements IResponseHandler {
 
     public abstract void onSuccess(int statusCode, JSONObject response);
 
-    @Override
-    public void onFail(int statusCode, String error) {
-
-    }
-
-    @Override
-    public void onProgress(long currentBytes, long totalBytes) {
-
-    }
 }

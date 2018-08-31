@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/8/23.
@@ -23,10 +25,12 @@ public class HomeModelIml implements HomeModel {
     private OkHttpUtil okHttpUtil;
     private Context mContext;
     private IResponseHandler iResponse;
+    public Map<String, String> params = new HashMap<String, String>();
     public HomeModelIml(Context context){
         LogUtil.e("luosuihan","HomeModelIml()");
         mContext = context;
         okHttpUtil = OkHttpUtil.getSingleOkHttp();
+        params.put("","");
     }
 
     @Override
@@ -41,15 +45,21 @@ public class HomeModelIml implements HomeModel {
 
     public ArrayList<HomeListBean.HDatas> portSucceed() {
         final ArrayList<HomeListBean.HDatas> data = new ArrayList<HomeListBean.HDatas>();
-        okHttpUtil.get(mContext, NetConstants.HOMELIST, new JsonHandler() {
+        okHttpUtil.getUrl(mContext, NetConstants.HOMELIST,params,new JsonHandler() {
             @Override
             public void onSuccess(int statusCode, JSONObject response) {
-                //数据处理
-                LogUtil.e("luosuihan","statusCode = "+statusCode+"  ,response = "+response.toString());
-                Gson gson = new Gson();
-                HomeListBean homeListBean = gson.fromJson(response.toString(), HomeListBean.class);
-                data.clear();
-                data.addAll(homeListBean.data.datas);
+                String s = response.toString();
+                LogUtil.e("s = "+s);
+            }
+
+            @Override
+            public void onFailure(int statusCode, String error) {
+
+            }
+
+            @Override
+            public void onProgress(long currentBytes, long totalBytes) {
+
             }
         });
         return data;

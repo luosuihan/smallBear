@@ -5,6 +5,6 @@ package com.example.administrator.playandroid.net;
  */
 
 public interface IResponseHandler {
-    void onFail(int statusCode,String error);
+    void onFailure(int statusCode,String error);
     void onProgress(long currentBytes, long totalBytes);
 }

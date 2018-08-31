@@ -25,128 +25,146 @@ import okhttp3.Response;
 
 public class OkHttpUtil {
     private OkHttpClient client;
-    private static OkHttpUtil singleOkHttp;
-
-    private OkHttpUtil() {
-        LogUtil.e("luosuihan", " OkHttpUtil() ");
+    private static OkHttpUtil instance;
+    public OkHttpUtil(){
         client = new OkHttpClient();
     }
-
-    public static OkHttpUtil getSingleOkHttp() {
-        if (singleOkHttp == null) {
-            singleOkHttp = new OkHttpUtil();
+    public static OkHttpUtil getSingleOkHttp(){
+        if(instance == null){
+            instance = new OkHttpUtil();
         }
-        return singleOkHttp;
+        return instance;
     }
-
-    public void post(Context context, final String url, final Map<String, String> params, final IResponseHandler iResponseHandler) {
-        postBody(context, url, params, iResponseHandler);
+    /**
+     * post 请求
+     * */
+    public void post(Context context, final String url, final Map<String,String> params,final IResponseHandler iResponseHandler){
+        postBody(context,url,params,iResponseHandler);
     }
 
     private void postBody(Context context, String url, Map<String, String> params, IResponseHandler iResponseHandler) {
         FormBody.Builder builder = new FormBody.Builder();
-        if (params != null && params.size() > 0) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                builder.add(entry.getKey(), entry.getValue());
+        if(params != null && params.size() > 0){
+            for (Map.Entry<String,String> entry : params.entrySet()){
+                builder.add(entry.getKey(),entry.getValue());
             }
         }
         Request request;
-        if (context == null) {
+        if(context == null){
             request = new Request.Builder()
                     .url(url)
                     .post(builder.build())
                     .build();
-        } else {
+        }else{
             request = new Request.Builder()
                     .url(url)
                     .post(builder.build())
                     .tag(context)
                     .build();
         }
-        client.newCall(request).enqueue(new MyOkHttpCallback(new Handler(), iResponseHandler));
+        client.newCall(request).enqueue(new GHomeCallback(new Handler(), iResponseHandler));
+    }
+    public void getUrl(Context context, String url, Map<String, String> params, IResponseHandler iResponseHandler){
+        getBody(context,url,params,iResponseHandler);
     }
 
-    public void get(Context context, final String url, final IResponseHandler iResponseHandler) {
-        getBody(context, url, iResponseHandler);
-    }
-
-    private void getBody(Context context, String url, IResponseHandler iResponseHandler) {
-
+    private void getBody(Context context, String url, Map<String, String> params, IResponseHandler iResponseHandler) {
+        String get_url = url;
+        if (params != null && params.size()>0){
+            int i = 0;
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if(i++ == 0) {
+                    get_url = get_url + "?" + entry.getKey() + "=" + entry.getValue();
+                } else {
+                    get_url = get_url + "&" + entry.getKey() + "=" + entry.getValue();
+                }
+            }
+        }
         Request request;
-        if (context == null) {
+        if(context == null) {
             request = new Request.Builder()
                     .url(url)
                     .build();
         } else {
             request = new Request.Builder()
                     .url(url)
+                    .tag(context)
                     .build();
         }
-        client.newCall(request).enqueue(new MyOkHttpCallback(new Handler(), iResponseHandler));
+        client.newCall(request).enqueue(new GHomeCallback(new Handler(),iResponseHandler));
     }
 
-    class MyOkHttpCallback implements Callback {
+    private class GHomeCallback implements Callback {
         private Handler mHandler;
-        private IResponseHandler mResponse;
+        private IResponseHandler mResponseHandler;
 
-        public MyOkHttpCallback(Handler handler, IResponseHandler responseHandler) {
+        public GHomeCallback(Handler handler, IResponseHandler responseHandler) {
             mHandler = handler;
-            mResponse = responseHandler;
+            mResponseHandler = responseHandler;
+
         }
 
+        //如下两个方法属于第三方库的
         @Override
         public void onFailure(Call call, final IOException e) {
+            //LogUtil.loge("luosuihan","onFailure e = "+e);
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mResponse.onFail(0, "异常消息：： e = " + e);
+                    mResponseHandler.onFailure(0,""+e);
                 }
             });
         }
 
         @Override
         public void onResponse(Call call, final Response response) throws IOException {
-            if (response.isSuccessful()) {
-                final String string = response.body().string();
-                if (mResponse instanceof GsonHandler) {
+            if (response.isSuccessful()){
+                final String response_body = response.body().string();
+                if(mResponseHandler instanceof GsonHandler){
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Gson gson = new Gson();
-                            ((GsonHandler) mResponse).onSuccess(response.code(), gson.fromJson(string, ((GsonHandler) mResponse).getType()));
+                            try {
+                                Gson gson = new Gson();
+                                ((GsonHandler)mResponseHandler).onSuccess(response.code(),
+                                        gson.fromJson(response_body, ((GsonHandler)mResponseHandler).getType()));
+                            } catch (Exception e) {
+                               // LogUtil.loge("luosuihan","onResponse fail parse gson, body=" + response_body+" ,"+e);
+                                mResponseHandler.onFailure(response.code(), "fail parse gson, body=" + response_body);
+                            }
                         }
                     });
-                } else if (mResponse instanceof JsonHandler) {
+                }else if(mResponseHandler instanceof JsonHandler){
                     try {
-                        final JSONObject jsonbody = new JSONObject(string);
+                        final JSONObject jsonBody = new JSONObject(response_body);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                ((JsonHandler) mResponse).onSuccess(response.code(), jsonbody);
+                                ((JsonHandler)mResponseHandler).onSuccess(response.code(), jsonBody);
                             }
                         });
-
-                    } catch (final JSONException e) {
-                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        //LogUtil.loge("luosuihan","onResponse fail parse jsonobject, body=" + response_body);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mResponse.onFail(response.code(), e + "");
+                                mResponseHandler.onFailure(response.code(), "fail parse jsonobject, body=" + response_body);
                             }
                         });
                     }
-                } else if (mResponse instanceof RawHandler) {
+                }else if(mResponseHandler instanceof RawHandler) {     //raw字符串回调
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            ((RawHandler) mResponse).onSuccess(response.code(), string);
+                            ((RawHandler)mResponseHandler).onSuccess(response.code(), response_body);
                         }
                     });
-                } else {
+                }else{
+                   // LogUtil.loge("luosuihan","onResponse fail status=" + response.code());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mResponse.onFail(response.code(), "。。异常。。");
+                            mResponseHandler.onFailure(0, "fail status=" + response.code());
                         }
                     });
                 }

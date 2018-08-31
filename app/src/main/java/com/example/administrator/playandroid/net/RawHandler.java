@@ -10,13 +10,5 @@ public abstract class RawHandler implements IResponseHandler {
 
     public abstract void onSuccess(int statusCode, String response);
 
-    @Override
-    public void onFail(int statusCode, String error) {
 
-    }
-
-    @Override
-    public void onProgress(long currentBytes, long totalBytes) {
-
-    }
 }

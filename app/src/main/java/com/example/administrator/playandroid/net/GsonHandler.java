@@ -25,13 +25,5 @@ public abstract class GsonHandler<T> implements IResponseHandler {
         return mType;
     }
     public abstract void onSuccess(int statusCode, T response);
-    @Override
-    public void onFail(int statusCode, String error) {
 
-    }
-
-    @Override
-    public void onProgress(long currentBytes, long totalBytes) {
-
-    }
 }
