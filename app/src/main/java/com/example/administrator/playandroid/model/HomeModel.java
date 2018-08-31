@@ -10,6 +10,7 @@ import java.util.List;
  */
 
 public interface HomeModel {
-    List<HomeBean.DataHome> onSucceed();
-    void onFail(String s);
+  /*  List<HomeBean.DataHome> onSucceed();
+    void onFail(String s);*/
+  void requestForData(OnHomeListener listener);
 }

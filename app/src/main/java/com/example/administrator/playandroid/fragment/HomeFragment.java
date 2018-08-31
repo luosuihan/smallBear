@@ -39,9 +39,15 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflate = View.inflate(getContext(), R.layout.home_fragment, null);
+
+        return inflate;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         HomePresenter homePresenter = new HomePresenter(getContext(),this);
         homePresenter.homeSucceed();
-        return inflate;
     }
 
     @Override

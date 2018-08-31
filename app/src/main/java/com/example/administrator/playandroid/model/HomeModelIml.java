@@ -38,7 +38,7 @@ public class HomeModelIml implements HomeModel {
         params.put("","");
     }
 
-    @Override
+   /* @Override
     public List<HomeBean.DataHome> onSucceed() {
         List<HomeBean.DataHome> datases = portSucceed();
         return datases;
@@ -47,7 +47,7 @@ public class HomeModelIml implements HomeModel {
     @Override
     public void onFail(String s) {
         LogUtil.e("luosuihan","onFail() = "+s);
-    }
+    }*/
 
     public List<HomeBean.DataHome> portSucceed() {
         final List<HomeBean.DataHome> data = new ArrayList<HomeBean.DataHome>();
@@ -75,5 +75,36 @@ public class HomeModelIml implements HomeModel {
             }
         });
         return data;
+    }
+
+    @Override
+    public void requestForData(final OnHomeListener listener) {
+        final List<HomeBean.DataHome> data = new ArrayList<HomeBean.DataHome>();
+        okHttpUtil.getUrl(mContext, NetConstants.HOMELIST,params,new JsonHandler() {
+            @Override
+            public void onSuccess(int statusCode, JSONObject response) {
+                LogUtil.e("s = "+response.toString());
+                Gson gson = new Gson();
+                String s = response.toString();
+                HomeBean gHomeBean = gson.fromJson(s, HomeBean.class);
+                data.clear();
+                data.addAll(gHomeBean.result.data);
+                LogUtil.e("集合长度 。。 ： "+data.size());
+                if(listener != null){
+                    LogUtil.e("集合长度 。。 listener： "+data.size());
+                    listener.onSucceed(data);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, String error) {
+                LogUtil.e("。。。网络请求失败。。。");
+            }
+
+            @Override
+            public void onProgress(long currentBytes, long totalBytes) {
+
+            }
+        });
     }
 }
