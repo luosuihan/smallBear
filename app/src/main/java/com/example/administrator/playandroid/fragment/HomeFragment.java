@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 
 import com.example.administrator.playandroid.R;
 import com.example.administrator.playandroid.base.BaseFragment;
+import com.example.administrator.playandroid.bean.HomeListBean;
 import com.example.administrator.playandroid.myview.HomeView;
 import com.example.administrator.playandroid.presenter.HomePresenter;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/8/23.
@@ -48,6 +51,11 @@ public class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void hideLoad() {
+
+    }
+
+    @Override
+    public void setItem(List<HomeListBean.HDatas> d) {
 
     }
 }

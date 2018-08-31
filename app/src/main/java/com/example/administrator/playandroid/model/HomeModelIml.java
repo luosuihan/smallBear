@@ -2,6 +2,7 @@ package com.example.administrator.playandroid.model;
 
 import android.content.Context;
 
+import com.example.administrator.playandroid.bean.HomeBean;
 import com.example.administrator.playandroid.bean.HomeListBean;
 import com.example.administrator.playandroid.net.IResponseHandler;
 import com.example.administrator.playandroid.net.JsonHandler;
@@ -9,11 +10,15 @@ import com.example.administrator.playandroid.net.NetConstants;
 import com.example.administrator.playandroid.net.OkHttpUtil;
 import com.example.administrator.playandroid.util.LogUtil;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +39,9 @@ public class HomeModelIml implements HomeModel {
     }
 
     @Override
-    public void onSucceed() {
-        portSucceed();
+    public List<HomeBean.DataHome> onSucceed() {
+        List<HomeBean.DataHome> datases = portSucceed();
+        return datases;
     }
 
     @Override
@@ -43,18 +49,24 @@ public class HomeModelIml implements HomeModel {
         LogUtil.e("luosuihan","onFail() = "+s);
     }
 
-    public ArrayList<HomeListBean.HDatas> portSucceed() {
-        final ArrayList<HomeListBean.HDatas> data = new ArrayList<HomeListBean.HDatas>();
+    public List<HomeBean.DataHome> portSucceed() {
+        final List<HomeBean.DataHome> data = new ArrayList<HomeBean.DataHome>();
         okHttpUtil.getUrl(mContext, NetConstants.HOMELIST,params,new JsonHandler() {
             @Override
             public void onSuccess(int statusCode, JSONObject response) {
+                LogUtil.e("s = "+response.toString());
+                Gson gson = new Gson();
                 String s = response.toString();
-                LogUtil.e("s = "+s);
+                HomeBean gHomeBean = gson.fromJson(s, HomeBean.class);
+                data.clear();
+                data.addAll(gHomeBean.result.data);
+                LogUtil.e("集合长度 。。 ： "+data.size());
+
             }
 
             @Override
             public void onFailure(int statusCode, String error) {
-
+                LogUtil.e("。。。网络请求失败。。。");
             }
 
             @Override
