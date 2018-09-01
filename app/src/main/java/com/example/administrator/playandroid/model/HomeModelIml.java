@@ -9,6 +9,7 @@ import com.example.administrator.playandroid.net.JsonHandler;
 import com.example.administrator.playandroid.net.NetConstants;
 import com.example.administrator.playandroid.net.OkHttpUtil;
 import com.example.administrator.playandroid.util.LogUtil;
+import com.example.administrator.playandroid.util.StorageDataUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -31,36 +32,24 @@ public class HomeModelIml implements HomeModel {
     private Context mContext;
     private IResponseHandler iResponse;
     public Map<String, String> params = new HashMap<String, String>();
-    public HomeModelIml(Context context){
-        LogUtil.e("luosuihan","HomeModelIml()");
+    private static final String HOMELISTKEY = "homelistkey";
+    public HomeModelIml(Context context) {
+        LogUtil.e("luosuihan", "HomeModelIml()");
         mContext = context;
         okHttpUtil = OkHttpUtil.getSingleOkHttp();
-        params.put("","");
+        params.put("", "");
     }
-
-   /* @Override
-    public List<HomeBean.DataHome> onSucceed() {
-        List<HomeBean.DataHome> datases = portSucceed();
-        return datases;
-    }
-
-    @Override
-    public void onFail(String s) {
-        LogUtil.e("luosuihan","onFail() = "+s);
-    }*/
-
-    public List<HomeBean.DataHome> portSucceed() {
+    /*public List<HomeBean.DataHome> portSucceed() {
         final List<HomeBean.DataHome> data = new ArrayList<HomeBean.DataHome>();
-        okHttpUtil.getUrl(mContext, NetConstants.HOMELIST,params,new JsonHandler() {
+        okHttpUtil.getUrl(mContext, NetConstants.HOMELIST, params, new JsonHandler() {
             @Override
             public void onSuccess(int statusCode, JSONObject response) {
-                LogUtil.e("s = "+response.toString());
+                LogUtil.e("s = " + response.toString());
                 Gson gson = new Gson();
                 String s = response.toString();
                 HomeBean gHomeBean = gson.fromJson(s, HomeBean.class);
                 data.clear();
                 data.addAll(gHomeBean.result.data);
-                LogUtil.e("集合长度 。。 ： "+data.size());
 
             }
 
@@ -75,36 +64,48 @@ public class HomeModelIml implements HomeModel {
             }
         });
         return data;
-    }
+    }*/
 
     @Override
     public void requestForData(final OnHomeListener listener) {
         final List<HomeBean.DataHome> data = new ArrayList<HomeBean.DataHome>();
-        okHttpUtil.getUrl(mContext, NetConstants.HOMELIST,params,new JsonHandler() {
-            @Override
-            public void onSuccess(int statusCode, JSONObject response) {
-                LogUtil.e("s = "+response.toString());
-                Gson gson = new Gson();
-                String s = response.toString();
-                HomeBean gHomeBean = gson.fromJson(s, HomeBean.class);
-                data.clear();
-                data.addAll(gHomeBean.result.data);
-                LogUtil.e("集合长度 。。 ： "+data.size());
-                if(listener != null){
-                    LogUtil.e("集合长度 。。 listener： "+data.size());
-                    listener.onSucceed(data);
+        final Gson gson = new Gson();
+        //StorageDataUtil.getStorage(mContext)
+        String lishi = StorageDataUtil.getStringData(mContext, HOMELISTKEY);
+        if (lishi != null) {
+            LogUtil.e("getStringData()");
+            HomeBean gHomeBean = gson.fromJson(lishi, HomeBean.class);
+            data.clear();
+            data.addAll(gHomeBean.result.data);
+            if (listener != null) {
+                listener.onSucceed(data);
+            }
+        } else {
+            LogUtil.e("okHttpUtil()");
+            okHttpUtil.getUrl(mContext, NetConstants.HOMELIST, params, new JsonHandler() {
+                @Override
+                public void onSuccess(int statusCode, JSONObject response) {
+                    LogUtil.e("s = " + response.toString());
+                    StorageDataUtil.saveStringData(mContext, HOMELISTKEY, response.toString());
+                    String s = response.toString();
+                    HomeBean gHomeBean = gson.fromJson(s, HomeBean.class);
+                    data.clear();
+                    data.addAll(gHomeBean.result.data);
+                    if (listener != null) {
+                        listener.onSucceed(data);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, String error) {
-                LogUtil.e("。。。网络请求失败。。。");
-            }
+                @Override
+                public void onFailure(int statusCode, String error) {
+                    LogUtil.e("。。。网络请求失败。。。");
+                }
 
-            @Override
-            public void onProgress(long currentBytes, long totalBytes) {
+                @Override
+                public void onProgress(long currentBytes, long totalBytes) {
 
-            }
-        });
+                }
+            });
+        }
     }
 }

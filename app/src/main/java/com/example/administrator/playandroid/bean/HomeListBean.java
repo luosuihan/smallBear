@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2018/8/23.
- * 首页文章list
+ * 首页文章list --- 废弃
  */
 
 public class HomeListBean {
