@@ -34,16 +34,25 @@ public class HomePresenter {
         //业务处理
       /*  List<HomeBean.DataHome> datases = homeModelIml.onSucceed();
         LogUtil.e("集合长度  。HomePresenter 。  = "+datases.size());*/
+      homeView.showLoad();
         homeModelIml.requestForData(new OnHomeListener() {
             @Override
             public void onSucceed(final List<HomeBean.DataHome> d) {
-                handler.post(new Runnable() {
+               /* handler.post(new Runnable() {
                     @Override
                     public void run() {
                         LogUtil.e("集合长度  。HomePresenter 。  = "+d.size());
                         homeView.setItem(d);
+                        homeView.hideLoad();
                     }
-                });
+                });*/
+               handler.postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       homeView.setItem(d);
+                       homeView.hideLoad();
+                   }
+               },3000);
 
             }
 

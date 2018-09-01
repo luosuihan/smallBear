@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.administrator.playandroid.R;
@@ -30,6 +31,7 @@ public class HomeFragment extends BaseFragment implements HomeView, AdapterView.
     private static HomeFragment singleFragment;
     private ListView homeLv;
     private HomePresenter homePresenter;
+    private ProgressBar homePb;
 
     public static HomeFragment getSingleHomeFragment(){
         if(singleFragment == null){
@@ -48,6 +50,7 @@ public class HomeFragment extends BaseFragment implements HomeView, AdapterView.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflate = View.inflate(getContext(), R.layout.home_fragment, null);
         homeLv = (ListView)inflate.findViewById(R.id.home_lv);
+        homePb = (ProgressBar)inflate.findViewById(R.id.home_pb);
         homeLv.setOnItemClickListener(this);
         return inflate;
     }
@@ -61,12 +64,12 @@ public class HomeFragment extends BaseFragment implements HomeView, AdapterView.
 
     @Override
     public void showLoad() {
-
+        homePb.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoad() {
-
+        homePb.setVisibility(View.GONE);
     }
 
     @Override
