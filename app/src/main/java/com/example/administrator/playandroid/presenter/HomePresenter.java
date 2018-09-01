@@ -41,6 +41,7 @@ public class HomePresenter {
                     @Override
                     public void run() {
                         LogUtil.e("集合长度  。HomePresenter 。  = "+d.size());
+                        homeView.setItem(d);
                     }
                 });
 
@@ -51,5 +52,8 @@ public class HomePresenter {
 
             }
         });
+    }
+    public void onItemClick(int p){
+        homeView.showMessage("你点击了。。。 = "+p);
     }
 }

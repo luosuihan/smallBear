@@ -6,9 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.administrator.playandroid.R;
+import com.example.administrator.playandroid.adapter.HomeFragmentAdapter;
 import com.example.administrator.playandroid.base.BaseFragment;
+import com.example.administrator.playandroid.bean.HomeBean;
 import com.example.administrator.playandroid.bean.HomeListBean;
 import com.example.administrator.playandroid.myview.HomeView;
 import com.example.administrator.playandroid.presenter.HomePresenter;
@@ -21,8 +26,11 @@ import java.util.List;
  * 首页列表展示 --- 通过fresh来判断是该数据是否为新的，如果是新的将置顶
  */
 
-public class HomeFragment extends BaseFragment implements HomeView {
+public class HomeFragment extends BaseFragment implements HomeView, AdapterView.OnItemClickListener {
     private static HomeFragment singleFragment;
+    private ListView homeLv;
+    private HomePresenter homePresenter;
+
     public static HomeFragment getSingleHomeFragment(){
         if(singleFragment == null){
             singleFragment = new HomeFragment();
@@ -39,14 +47,15 @@ public class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflate = View.inflate(getContext(), R.layout.home_fragment, null);
-
+        homeLv = (ListView)inflate.findViewById(R.id.home_lv);
+        homeLv.setOnItemClickListener(this);
         return inflate;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        HomePresenter homePresenter = new HomePresenter(getContext(),this);
+        homePresenter = new HomePresenter(getContext(),this);
         homePresenter.homeSucceed();
     }
 
@@ -61,7 +70,18 @@ public class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void setItem(List<HomeListBean.HDatas> d) {
+    public void setItem(List<HomeBean.DataHome> d) {
+        HomeFragmentAdapter adapter = new HomeFragmentAdapter(getContext(),d);
+        homeLv.setAdapter(adapter);
+    }
 
+    @Override
+    public void showMessage(String s) {
+        Toast.makeText(getContext(),s,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        homePresenter.onItemClick(position);
     }
 }

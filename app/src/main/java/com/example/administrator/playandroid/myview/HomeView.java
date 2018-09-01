@@ -1,5 +1,6 @@
 package com.example.administrator.playandroid.myview;
 
+import com.example.administrator.playandroid.bean.HomeBean;
 import com.example.administrator.playandroid.bean.HomeListBean;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public interface HomeView {
     void showLoad();
     void hideLoad();
-    void setItem(List<HomeListBean.HDatas> d);
+    void setItem(List<HomeBean.DataHome> d);
+    void showMessage(String s);
 
 }
