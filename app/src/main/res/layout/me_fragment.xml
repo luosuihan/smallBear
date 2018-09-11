@@ -2,8 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-<TextView
-    android:text="登录页面"
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorAccent"
+        android:text="Hello World!"
+        />
+<com.example.administrator.playandroid.weight.ListView3
+    android:id="@+id/plv"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 </LinearLayout>
