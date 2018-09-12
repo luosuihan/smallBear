@@ -2,10 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <com.example.administrator.playandroid.text.PullListViewText
-        android:id="@+id/plvt"
+    android:orientation="horizontal">
+    <ProgressBar
+        android:id="@+id/text_foot_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/text_foot_tv"
+        android:text="加载更多"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

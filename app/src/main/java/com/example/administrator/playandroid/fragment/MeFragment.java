@@ -80,7 +80,7 @@ public class MeFragment extends BaseFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showShortToast(context, "上拉加载成功");
+                        ToastUtil.showShortToast(getContext(), "上拉加载成功");
                         dataList.add("footer  footer  footer  ");
                         adapter.notifyDataSetChanged();
                         listView.finishLoadMore();
