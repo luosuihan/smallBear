@@ -14,24 +14,6 @@ import android.widget.TextView;
 import com.example.administrator.playandroid.R;
 import com.example.administrator.playandroid.util.LogUtil;
 
-/**
- * Created by cui on 2018/3/20
- * 先添加headerView footerView，
- * 在onTouchEvent中 down move up 中判断状态
- * 下拉刷新过程有3种状态： 下拉刷新  +  释放刷新 +刷新中
- * 上拉加载过程有2种状态： 上拉加载  + 加载中
- * <p>
- * 下拉刷新中：
- * move中判断是 下拉刷新 还是 释放刷新
- * up中进行刷新操作:  当前是下拉刷新，则隐藏header;当前是释放刷新，则进行刷新动作。
- * <p>
- * <p>
- * <p>
- * 下拉刷新：headerView开始慢慢显示到完全显示出来
- * 释放刷新：headerView完全显示出来，但是你还在下拉，move没有停止
- * 刷新你中：headerView完全显示出来，手指离开屏幕 ACTION_UP
- */
-
 public class ListView3 extends ListView implements AbsListView.OnScrollListener {
 
     //header
