@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProjectFragment projectFragment;
     private CollectFragment collectFragment;
     private MeFragment meFragment;
-
+     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
